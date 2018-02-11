@@ -1,0 +1,34 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    height: 100vh;
+    display: flex;
+}
+
+#partyTime {
+    height: 40px;
+    width: 100px;
+    position: absolute;
+    left: calc(50% - 100px);
+    top: calc(40% - 40px);
+}
+
+#container {
+    height: 200px;
+    width: 200px;
+    margin: 20px;
+    align-self: flex-end;
+    position: relative;
+    z-index: 2;
+}
+
+#container img {
+    width: 100%;
+    transform: rotateZ(-30deg);
+    z-index: 2;
+}
+
+.confetti {
+    position: absolute;
+    z-index: 1;
+}
