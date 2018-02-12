@@ -1,67 +1,90 @@
 $(document).ready(function() {
     
+    // Container for the confetti
     const box = $('#container');
-    const boxWidth = box.width();
-    const boxHeight = box.height();
     
     const btn = $('#partyTime');
     
     const className = ".confetti";
     
+    // What element the confetti will be created as
     const elementType = "<div></div>";
     
+    // Minimum and maximum height for each confetti
     const minHeight = 5;
     const maxHeight = 15;
     
+    // Minimum and maximum width for each confetti
     const minWidth = 20;
     const maxWidth = 30;
     
+    // Starting position for the confetti
+    const startPosTop = 50;
+    const startPosLeft = 135;
+    
+    // The final landing position for the confetti
+    // This is currently 100% (only works if their container sits at the bottom of the browser window)
     const floor = 100;
-
+    
+    // Minimum and maximum left position for each confetti
+    // This controls the spread of the confetti
+    // The larger the difference between the numbers, the bigger the spread will be
     const minFireLeft = 500;
     const maxFireLeft = 1200;
     
-    const minAnimDuration = 8;
+    // Minimum and maximum transition (animation) duration for each confetti
+    const minAnimDuration = 7;
     const maxAnimDuration = 10;
     
+    // Amount of confetti elements that will be created upon document load
     const confettiAmount = 200;
     
+    // Array containing the confetti background colors
+    const colorArr = ['#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6', '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D', '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A', '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC', '#66994D', '#B366CC', '#4D8000', '#B33300', '#CC80CC', '#66664D', '#991AFF', '#E666FF', '#4DB3FF', '#1AB399', '#E666B3', '#33991A', '#CC9999', '#B3B31A', '#00E680', '#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933', '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3', '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'];
+    
+    // Creates specified amount of confetti
     function CreateConfetti(amount) {
         
         for (i = 0; i < amount; i ++) {
+            
+            // Giving the confetti a random height and width
             const h =  Rand(minHeight, maxHeight);
             const w = Rand(minWidth, maxWidth);
-            const color = "rgb(" + Rand(50, 200) + ", " + Rand(50, 200) + ", " + Rand(50, 200) + ")";
             
+            // Generating the confetti background color
+            const color = colorArr[Rand(0, colorArr.length)];
+            
+            // Creating the confetti as the specified type
             const c = $(elementType);
             
+            // Setting height and width
             c.height(h);
             c.width(w);
             
+            // Adding class with global styling
             c.addClass("confetti");
             
+            // Setting the position and background color of the confetti
             c.css({
                 "background-color": color,
-                "left": (boxWidth - maxWidth * 2),
-                "top": 50
+                "left": startPosLeft,
+                "top": startPosTop
             });
             
+            // Inserts the confetti into the container
             box.append(c);
         }
         
     }
     
-    CreateConfetti(confettiAmount);
-    
     function Fire() {
         
-        if ($(className).first().css("top") != "0px") {
+        if ($(className).css("top") != startPosTop + "px") {
             
             ResetConfetti();
             Fire();
             
         } else {
-            
             box.children(className).each(function() {
                 
                 const c = $(this);
@@ -74,12 +97,22 @@ $(document).ready(function() {
                 const zRotation = Rand(540, 1440);
                 
                 // Controls the vertical spread of the confetti, the bigger the difference between the two numbers, the larger the spread
-                const verticalSpread = RandFloat(5, 8);
+                const verticalSpread = RandFloat(4, 8);
+                
+                // Controls how clumped the confetti falls
+                // Second value cannot be above 1
+                // This is used to prevent them all hitting the ground at the same time
+                // The bigger the difference between the two numbers, the larger the spread
+                const fallingClump = RandFloat(-5, 1);
+                
+                // Delay before transition (animation) starts
+                // This is used to prevent all the confetti being fired in a clump
+                const delay = RandFloat(0, 1);
                 
                 // Setting up the three different transition properties for the element
-                const cTransitionTop = "top " + dur + "s cubic-bezier(0.01, -" + verticalSpread + ", 0.01, 0.01)";
-                const cTransitionLeft = "left " + dur + "s cubic-bezier(0.01, 1, 0.01, 1)";
-                const cTransitionTransform = "transform " + dur + "s linear";
+                const cTransitionTop = "top " + dur + "s cubic-bezier(0, -" + verticalSpread + ", 0.1, " + fallingClump + ") " + delay + "s";
+                const cTransitionLeft = "left " + dur + "s cubic-bezier(0, 1, 0.1, 1) " + delay + "s";
+                const cTransitionTransform = "transform " + dur + "s linear " + delay + "s";
                 
                 // Stitching the transitions together
                 const cTransition = cTransitionTop + ", " + cTransitionLeft + ", " + cTransitionTransform;
@@ -115,8 +148,8 @@ $(document).ready(function() {
             
             c.css({
                 "transition": "",
-                "top": "0px",
-                "left": (boxWidth - maxWidth),
+                "top": startPosTop,
+                "left": startPosLeft,
                 "transform": ""
             });
             
@@ -136,6 +169,8 @@ $(document).ready(function() {
         
         return a;
     }
+    
+    CreateConfetti(confettiAmount);
     
     btn.click(function() {
         Fire();
