@@ -77,14 +77,18 @@ $(document).ready(function() {
         
     }
     
+    // Launches all confetti into the air by changing their left and top positions with a transition effect
     function Fire() {
         
+        // If confetti has already been launched, reset their position and launch again
         if ($(className).css("top") != startPosTop + "px") {
             
             ResetConfetti();
             Fire();
             
         } else {
+            
+            // Loops through all confetti inside the container
             box.children(className).each(function() {
                 
                 const c = $(this);
@@ -126,6 +130,7 @@ $(document).ready(function() {
                 // Transform (i.e. the rotational movement) for the element
                 const cTransform = "rotateX(" + xRotation + "deg) rotateZ(" + zRotation + "deg)";
                 
+                // Adding the CSS properties to the confetti
                 c.css({
                     "transition": cTransition,
                     "left": cLeft,
