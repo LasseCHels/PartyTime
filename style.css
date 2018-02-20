@@ -47,6 +47,7 @@ body {
     width: 100%;
     transform: rotateZ(-30deg);
     z-index: 2;
+    position: relative;
 }
 
 .confetti {
